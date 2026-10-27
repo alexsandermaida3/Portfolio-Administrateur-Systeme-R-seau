@@ -1,381 +1,101 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alex Sander Maida Llaveta — Administrateur Système &amp; Réseau</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #0a0c10; --bg2: #0f1117; --bg3: #161a24;
-    --accent: #00d4aa; --accent2: #0066ff; --accent3: #ff6b35;
-    --text: #e8eaf0; --text2: #8892a4; --text3: #4a5568;
-    --border: rgba(255,255,255,0.07); --border-accent: rgba(0,212,170,0.3);
-    --mono: 'JetBrains Mono', monospace; --sans: 'Syne', sans-serif;
-  }
-  html { scroll-behavior: smooth; }
-  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
-  body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,212,170,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,170,0.025) 1px, transparent 1px); background-size: 40px 40px; pointer-events: none; z-index: 0; }
-  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 3rem; background: rgba(10,12,16,0.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-  .nav-logo { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); }
-  .nav-links { display: flex; gap: 2rem; list-style: none; }
-  .nav-links a { font-family: var(--mono); font-size: 0.73rem; color: var(--text2); text-decoration: none; letter-spacing: 0.07em; transition: color 0.2s; }
-  .nav-links a:hover { color: var(--accent); }
-  .container { position: relative; z-index: 1; max-width: 1080px; margin: 0 auto; padding: 0 2.5rem; }
-  .section-wrap { padding: 6rem 0; }
-  .section-tag { font-family: var(--mono); font-size: 0.7rem; color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.5rem; }
-  .section-title { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
-  .section-sub { font-size: 0.9rem; color: var(--text2); max-width: 540px; line-height: 1.85; margin-bottom: 3rem; }
-  .divider { border: none; border-top: 1px solid var(--border); }
-
-  /* HERO */
-  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-top: 5rem; max-width: 1080px; margin: 0 auto; padding-left: 2.5rem; padding-right: 2.5rem; }
-  .hero-eyebrow { display: inline-flex; align-items: center; gap: 0.75rem; font-family: var(--mono); font-size: 0.73rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1.75rem; }
-  .hero-eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: pulse 2s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(0,212,170,0.5);} 50%{box-shadow:0 0 0 8px rgba(0,212,170,0);} }
-  .hero h1 { font-size: clamp(2.4rem, 5.5vw, 4.8rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.025em; margin-bottom: 0.5rem; }
-  .hero h1 .first { color: var(--text2); font-weight: 400; display: block; font-size: 0.5em; letter-spacing: 0.03em; margin-bottom: 0.3em; }
-  .hero-role { font-family: var(--mono); font-size: 0.85rem; color: var(--accent2); letter-spacing: 0.1em; margin: 1.25rem 0 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
-  .hero-role::before { content:''; width: 24px; height: 1px; background: var(--accent2); }
-  .hero-pitch { font-size: 1.02rem; color: var(--text2); max-width: 520px; margin-bottom: 2.25rem; line-height: 1.9; }
-  .hero-pitch strong { color: var(--text); }
-  .hero-certs { display: flex; gap: 0.65rem; flex-wrap: wrap; margin-bottom: 2.75rem; }
-  .cert-badge { display: flex; align-items: center; gap: 0.5rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.06em; padding: 0.4rem 0.9rem; border-radius: 4px; border: 1px solid; transition: transform 0.2s; }
-  .cert-badge:hover { transform: translateY(-1px); }
-  .cert-badge.wip { border-color: rgba(255,107,53,0.4); color: var(--accent3); background: rgba(255,107,53,0.06); }
-  .cert-badge.done { border-color: rgba(0,212,170,0.3); color: var(--accent); background: rgba(0,212,170,0.05); }
-  .cert-badge .bdot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
-  .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
-  .btn { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; padding: 0.8rem 1.75rem; border-radius: 4px; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; }
-  .btn-p { background: var(--accent); color: #0a0c10; }
-  .btn-p:hover { background: #00ffcc; transform: translateY(-1px); }
-  .btn-g { background: transparent; color: var(--text); border: 1px solid var(--border-accent); }
-  .btn-g:hover { border-color: var(--accent); color: var(--accent); }
-
-  /* ABOUT */
-  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
-  .about-text p { font-size: 0.93rem; color: var(--text2); line-height: 1.95; margin-bottom: 1.2rem; }
-  .about-text p strong { color: var(--text); }
-  .about-text p em { color: var(--accent); font-style: normal; font-family: var(--mono); font-size: 0.87em; }
-  .value-list { display: flex; flex-direction: column; gap: 1px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .val { background: var(--bg2); padding: 1.2rem 1.5rem; display: flex; gap: 1rem; align-items: flex-start; transition: background 0.2s; }
-  .val:hover { background: var(--bg3); }
-  .val-n { font-family: var(--mono); font-size: 0.65rem; color: var(--text3); padding-top: 0.15rem; min-width: 22px; }
-  .val-t { font-weight: 700; font-size: 0.88rem; margin-bottom: 0.2rem; }
-  .val-d { font-size: 0.8rem; color: var(--text2); line-height: 1.65; }
-
-  /* SKILLS */
-  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .skill-card { background: var(--bg2); padding: 1.65rem; position: relative; transition: background 0.2s; }
-  .skill-card:hover { background: var(--bg3); }
-  .skill-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
-  .skill-card:hover::after { transform: scaleX(1); }
-  .skill-lv { font-family: var(--mono); font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.45rem; }
-  .skill-lv.ok { color: var(--accent); } .skill-lv.wip { color: var(--accent3); }
-  .skill-name { font-weight: 700; font-size: 0.92rem; margin-bottom: 0.35rem; }
-  .skill-desc { font-size: 0.79rem; color: var(--text2); line-height: 1.65; margin-bottom: 0.9rem; }
-  .tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
-  .tag { font-family: var(--mono); font-size: 0.63rem; padding: 0.18rem 0.5rem; border-radius: 3px; background: rgba(0,212,170,0.07); color: var(--accent); border: 1px solid rgba(0,212,170,0.18); }
-  .tag.o { background: rgba(255,107,53,0.07); color: var(--accent3); border-color: rgba(255,107,53,0.2); }
-
-  /* ROADMAP */
-  .roadmap { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .rm-item { display: grid; grid-template-columns: 110px 1fr; border-bottom: 1px solid var(--border); }
-  .rm-item:last-child { border-bottom: none; }
-  .rm-date { background: var(--bg3); padding: 1.2rem 1.25rem; font-family: var(--mono); font-size: 0.7rem; color: var(--text3); display: flex; flex-direction: column; gap: 0.2rem; border-right: 1px solid var(--border); }
-  .rm-status { font-size: 0.63rem; padding: 0.15rem 0.4rem; border-radius: 2px; width: fit-content; margin-top: 0.2rem; }
-  .rm-status.done { background: rgba(0,212,170,0.1); color: var(--accent); }
-  .rm-status.now { background: rgba(255,107,53,0.1); color: var(--accent3); }
-  .rm-status.next { background: rgba(136,146,164,0.08); color: var(--text2); }
-  .rm-body { padding: 1.2rem 1.5rem; background: var(--bg2); }
-  .rm-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 0.2rem; }
-  .rm-desc { font-size: 0.79rem; color: var(--text2); line-height: 1.7; }
-
-  /* PROJETS */
-  .lab-note { font-family: var(--mono); font-size: 0.78rem; color: var(--text2); background: var(--bg2); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 4px; padding: 0.9rem 1.2rem; margin-bottom: 2rem; line-height: 1.8; }
-  .lab-note span { color: var(--accent); }
-  .proj-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .proj { background: var(--bg2); padding: 1.65rem; display: flex; flex-direction: column; gap: 0.7rem; transition: background 0.2s; }
-  .proj:hover { background: var(--bg3); }
-  .proj-header { display: flex; justify-content: space-between; align-items: flex-start; }
-  .proj-num { font-family: var(--mono); font-size: 0.65rem; color: var(--text3); }
-  .proj-badge { font-family: var(--mono); font-size: 0.63rem; padding: 0.15rem 0.5rem; border-radius: 2px; }
-  .proj-badge.build { background: rgba(255,107,53,0.1); color: var(--accent3); border: 1px solid rgba(255,107,53,0.2); }
-  .proj-badge.plan { background: rgba(136,146,164,0.08); color: var(--text2); border: 1px solid rgba(136,146,164,0.18); }
-  .proj-name { font-size: 0.97rem; font-weight: 700; line-height: 1.3; }
-  .proj-desc { font-size: 0.8rem; color: var(--text2); line-height: 1.7; flex: 1; }
-  .proj-why { font-family: var(--mono); font-size: 0.7rem; color: var(--accent); }
-  .proj-stack { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: auto; }
-
-  /* CONTACT */
-  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
-  .contact-h { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; }
-  .contact-p { font-size: 0.88rem; color: var(--text2); line-height: 1.9; margin-bottom: 2rem; }
-  .clinks { display: flex; flex-direction: column; gap: 0.65rem; }
-  .clink { display: flex; align-items: center; gap: 1rem; padding: 0.85rem 1.2rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; text-decoration: none; color: var(--text); transition: border-color 0.2s; }
-  .clink:hover { border-color: var(--border-accent); }
-  .clink-icon { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); width: 26px; text-align: center; }
-  .clink-label { font-family: var(--mono); font-size: 0.63rem; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; }
-  .clink-val { font-size: 0.83rem; }
-  .terminal { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .t-bar { display: flex; align-items: center; gap: 0.4rem; padding: 0.65rem 1rem; background: var(--bg3); border-bottom: 1px solid var(--border); }
-  .dot { width: 9px; height: 9px; border-radius: 50%; }
-  .dr { background: #ff5f57; } .dy { background: #febc2e; } .dg { background: #28c840; }
-  .t-ttl { font-family: var(--mono); font-size: 0.65rem; color: var(--text3); margin-left: 0.4rem; }
-  .t-body { padding: 1.2rem 1.4rem; font-family: var(--mono); font-size: 0.77rem; line-height: 2.1; }
-  .tp { color: var(--accent); } .tc { color: var(--text); } .to { color: var(--text2); } .tok { color: #28c840; } .twarn { color: var(--accent3); } .tpath { color: var(--accent2); }
-  .cursor { display: inline-block; width: 7px; height: 1em; background: var(--accent); vertical-align: text-bottom; animation: blink 1.1s step-end infinite; }
-  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
-  footer { position: relative; z-index: 1; text-align: center; padding: 2rem; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 0.65rem; color: var(--text3); }
-  @media (max-width: 768px) {
-    nav { padding: 1rem 1.5rem; } .nav-links { display: none; }
-    .hero, .container { padding-left: 1.5rem; padding-right: 1.5rem; }
-    .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .rm-item { grid-template-columns: 80px 1fr; }
-  }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101d2a">
+  <meta name="description" content="Support informatique pour professionnels, indépendants et télétravailleurs à Nîmes, Montpellier et alentours. Assistance, systèmes, réseaux et projets avec un interlocuteur direct.">
+  <title>Alex Sander — Support informatique, systèmes & réseaux</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<nav>
-  <div class="nav-logo">alex@sysadmin:~$<span class="cursor"></span></div>
-  <ul class="nav-links">
-    <li><a href="#about">à propos</a></li>
-    <li><a href="#competences">compétences</a></li>
-    <li><a href="#roadmap">roadmap</a></li>
-    <li><a href="#projets">projets</a></li>
-    <li><a href="#contact">contact</a></li>
-  </ul>
-</nav>
-
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-eyebrow"><span class="hero-eyebrow-dot"></span>Disponible · Nîmes - Avignon - Aix en Provence &amp; remote</div>
-  <h1>
-    <span class="first">Alex Sander Maida Llaveta</span>
-    Administrateur<br>Système &amp; Réseau
-  </h1>
-  <div class="hero-role">En formation intensive — CCNA &amp; RHCSA</div>
-  <p class="hero-pitch">
-    <strong>Autodidacte déterminé</strong>, je construis mes compétences en systèmes Linux et réseaux Cisco avec méthode et rigueur. Pas encore d'expérience professionnelle, mais une vraie passion pour l'infrastructure et des certifications en cours qui le prouvent.
-  </p>
-  <div class="hero-certs">
-    <div class="cert-badge wip"><span class="bdot"></span>CCNA — En cours</div>
-    <div class="cert-badge wip"><span class="bdot"></span>RHCSA — En cours</div>
-    <div class="cert-badge done"><span class="bdot"></span>Linux Fondamentaux ✓</div>
-    <div class="cert-badge done"><span class="bdot"></span>Réseaux TCP/IP ✓</div>
-  </div>
-  <div class="hero-cta">
-    <a href="#contact" class="btn btn-p">Me recruter</a>
-    <a href="#roadmap" class="btn btn-g">Ma progression</a>
-  </div>
-</div>
-
-<hr class="divider">
-
-<!-- ABOUT -->
-<div class="container" id="about">
-  <div class="section-wrap">
-    <div class="section-tag">// 01 — à propos</div>
-    <h2 class="section-title">Pourquoi me choisir ?</h2>
-    <p class="section-sub">Pas d'expérience, c'est vrai. Mais certaines qualités ne s'achètent pas.</p>
-    <div class="about-grid">
-      <div class="about-text">
-        <p>Je m'appelle <strong>Alex Sander Maida Llaveta</strong>. J'ai choisi l'administration système et réseau parce que c'est un métier où <em>la rigueur compte vraiment</em> — une mauvaise config peut tout faire tomber. Ça me plaît.</p>
-        <p>Je prépare le <strong>CCNA</strong> pour la partie réseau et le <strong>RHCSA</strong> pour Linux. Ces certifications reconnues mondialement me permettent d'acquérir exactement les bases qu'attendent les entreprises — <em>pas de raccourcis.</em></p>
-        <p>Ce que j'apporte : de la <strong>disponibilité totale</strong>, une capacité d'apprentissage rapide, et l'énergie de quelqu'un qui veut vraiment faire ses preuves. Je suis prêt à bosser dur pour mériter ma place dans votre équipe.</p>
-      </div>
-      <div class="value-list">
-        <div class="val"><span class="val-n">01</span><div><div class="val-t">Autodidacte structuré</div><div class="val-d">J'apprends seul, mais pas au hasard. Plans d'étude, labs pratiques, documentation — je travaille comme un pro, pas comme un amateur.</div></div></div>
-        <div class="val"><span class="val-n">02</span><div><div class="val-t">Certifications reconnues</div><div class="val-d">CCNA et RHCSA sont les références de l'industrie. Ce ne sont pas du remplissage — ce sont des preuves concrètes d'un niveau technique validé.</div></div></div>
-        <div class="val"><span class="val-n">03</span><div><div class="val-t">Zéro mauvaises habitudes</div><div class="val-d">Pas d'expérience signifie aussi : pas de réflexes bancals à déconstruire. Adaptable, façonnable, prêt à apprendre votre façon de faire.</div></div></div>
-        <div class="val"><span class="val-n">04</span><div><div class="val-t">Motivation documentée</div><div class="val-d">Ce portfolio, c'est ma preuve. Construire sa visibilité avant d'avoir un poste, c'est exactement l'état d'esprit d'un bon admin sys.</div></div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<hr class="divider">
-
-<!-- COMPÉTENCES -->
-<div class="container" id="competences">
-  <div class="section-wrap">
-    <div class="section-tag">// 02 — compétences</div>
-    <h2 class="section-title">Ce que je sais faire</h2>
-    <p class="section-sub">Honnêteté totale sur les niveaux — en construction active pour la plupart.</p>
-    <div class="skills-grid">
-      <div class="skill-card">
-        <div class="skill-lv ok">Niveau correct</div>
-        <div class="skill-name">Linux — Fondamentaux</div>
-        <div class="skill-desc">Navigation système, gestion des fichiers, droits, processus, cron, scripting Bash basique. À l'aise sur un terminal.</div>
-        <div class="tags"><span class="tag">Bash</span><span class="tag">Debian/Ubuntu</span><span class="tag">RHEL</span><span class="tag">systemd</span></div>
-      </div>
-      <div class="skill-card">
-        <div class="skill-lv wip">En apprentissage actif</div>
-        <div class="skill-name">Réseaux — CCNA</div>
-        <div class="skill-desc">Modèle OSI, TCP/IP, adressage IP/VLSM, configuration de base des routeurs et switches Cisco, VLANs, STP, NAT.</div>
-        <div class="tags"><span class="tag o">Cisco IOS</span><span class="tag o">VLAN</span><span class="tag o">Routage statique</span><span class="tag o">OSPF</span></div>
-      </div>
-      <div class="skill-card">
-        <div class="skill-lv wip">En apprentissage actif</div>
-        <div class="skill-name">Administration Linux — RHCSA</div>
-        <div class="skill-desc">Gestion des utilisateurs, LVM, SELinux, services systemd, configuration réseau, firewalld, SSH, tâches planifiées.</div>
-        <div class="tags"><span class="tag o">SELinux</span><span class="tag o">LVM</span><span class="tag o">firewalld</span><span class="tag o">NFS/Samba</span></div>
-      </div>
-      <div class="skill-card">
-        <div class="skill-lv ok">Bases solides</div>
-        <div class="skill-name">Virtualisation &amp; Labs</div>
-        <div class="skill-desc">Création et gestion de machines virtuelles pour mes entraînements quotidiens et simulations réseau.</div>
-        <div class="tags"><span class="tag">VirtualBox</span><span class="tag">VMware Player</span><span class="tag">GNS3</span><span class="tag">Packet Tracer</span></div>
-      </div>
-      <div class="skill-card">
-        <div class="skill-lv ok">Bases solides</div>
-        <div class="skill-name">Services réseau</div>
-        <div class="skill-desc">Compréhension et configuration basique des services essentiels d'une infrastructure IT.</div>
-        <div class="tags"><span class="tag">DNS</span><span class="tag">DHCP</span><span class="tag">SSH</span><span class="tag">HTTP/S</span></div>
-      </div>
-      <div class="skill-card">
-        <div class="skill-lv ok">Débutant avancé</div>
-        <div class="skill-name">Scripting &amp; Automatisation</div>
-        <div class="skill-desc">Scripts Bash pour automatiser des tâches répétitives — sauvegarde, monitoring basique, déploiement de config.</div>
-        <div class="tags"><span class="tag">Bash</span><span class="tag">Cron</span><span class="tag">Python (bases)</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<hr class="divider">
-
-<!-- ROADMAP -->
-<div class="container" id="roadmap">
-  <div class="section-wrap">
-    <div class="section-tag">// 03 — roadmap</div>
-    <h2 class="section-title">Ma progression</h2>
-    <p class="section-sub">Un plan clair, des étapes mesurables. Voici où j'en suis et où je vais.</p>
-    <div class="roadmap">
-      <div class="rm-item">
-        <div class="rm-date">2024<br>Accompli<span class="rm-status done">✓ fait</span></div>
-        <div class="rm-body"><div class="rm-title">Fondamentaux Linux &amp; Réseaux</div><div class="rm-desc">Apprentissage des bases Linux (ligne de commande, services, droits), modèle TCP/IP, protocoles essentiels. Premiers labs sur VirtualBox et Packet Tracer.</div></div>
-      </div>
-      <div class="rm-item">
-        <div class="rm-date">2025<br>En cours<span class="rm-status now">⚡ now</span></div>
-        <div class="rm-body"><div class="rm-title">CCNA — Cisco Certified Network Associate</div><div class="rm-desc">Préparation intensive : routage, switching, VLANs, OSPF, ACL, NAT, sécurité réseau de base. Labs quotidiens sur GNS3. Examen prévu prochainement.</div></div>
-      </div>
-      <div class="rm-item">
-        <div class="rm-date">2025<br>En cours<span class="rm-status now">⚡ now</span></div>
-        <div class="rm-body"><div class="rm-title">RHCSA — Red Hat Certified System Administrator</div><div class="rm-desc">Administration RHEL 9 : LVM, SELinux, systemd, configuration réseau, sécurité. Labs sur VMs RHEL en parallèle du CCNA.</div></div>
-      </div>
-      <div class="rm-item">
-        <div class="rm-date">2025–26<br>Planifié<span class="rm-status next">→ next</span></div>
-        <div class="rm-body"><div class="rm-title">Premier poste + Homelab Proxmox</div><div class="rm-desc">Décrocher un premier emploi pour apprendre en conditions réelles. Construction d'un homelab avec Proxmox, pfSense et monitoring Zabbix/Grafana.</div></div>
-      </div>
-      <div class="rm-item">
-        <div class="rm-date">2026<br>Objectif<span class="rm-status next">→ next</span></div>
-        <div class="rm-body"><div class="rm-title">CompTIA Security+ &amp; AWS Cloud Practitioner</div><div class="rm-desc">Élargissement vers la sécurité et le cloud — les deux domaines incontournables pour un admin sys/réseau moderne.</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<hr class="divider">
-
-<!-- PROJETS -->
-<div class="container" id="projets">
-  <div class="section-wrap">
-    <div class="section-tag">// 04 — projets &amp; labs</div>
-    <h2 class="section-title">Mes labs pratiques</h2>
-    <div class="lab-note"><span>// Note honnête</span> — Ces projets sont des labs d'entraînement, pas des productions. Leur but : prouver que j'applique ce que j'apprends, pas juste lire des cours. Chaque lab documenté sur GitHub.</div>
-    <div class="proj-grid">
-      <div class="proj">
-        <div class="proj-header"><span class="proj-num">01</span><span class="proj-badge build">En construction</span></div>
-        <div class="proj-name">Lab Réseau CCNA — Topologie complète</div>
-        <div class="proj-desc">Simulation GNS3 d'un réseau d'entreprise : 3 sites, routage OSPF, VLANs inter-VLAN routing, ACL, NAT/PAT. Reproduit un cas réel de PME multi-sites.</div>
-        <div class="proj-why">→ Prouve la maîtrise pratique du programme CCNA</div>
-        <div class="proj-stack"><span class="tag">GNS3</span><span class="tag">Cisco IOS</span><span class="tag">OSPF</span><span class="tag">VLAN</span><span class="tag">ACL</span></div>
-      </div>
-      <div class="proj">
-        <div class="proj-header"><span class="proj-num">02</span><span class="proj-badge build">En construction</span></div>
-        <div class="proj-name">Serveur RHEL 9 — Config sécurisée complète</div>
-        <div class="proj-desc">VM RHEL 9 durcie : SELinux enforcing, firewalld, SSH sécurisé, LVM multi-volumes, NFS/Samba, backup cron automatique. Documentation complète.</div>
-        <div class="proj-why">→ Préparation concrète à l'examen RHCSA</div>
-        <div class="proj-stack"><span class="tag">RHEL 9</span><span class="tag">SELinux</span><span class="tag">LVM</span><span class="tag">firewalld</span><span class="tag">Bash</span></div>
-      </div>
-      <div class="proj">
-        <div class="proj-header"><span class="proj-num">03</span><span class="proj-badge plan">Planifié</span></div>
-        <div class="proj-name">Homelab Proxmox + Monitoring</div>
-        <div class="proj-desc">Infrastructure virtualisée sur hardware dédié : Proxmox comme hyperviseur, pfSense pour le firewall/routage, Zabbix + Grafana pour l'observabilité.</div>
-        <div class="proj-why">→ Gérer une vraie infra de bout en bout</div>
-        <div class="proj-stack"><span class="tag">Proxmox</span><span class="tag">pfSense</span><span class="tag">Zabbix</span><span class="tag">Grafana</span></div>
-      </div>
-      <div class="proj">
-        <div class="proj-header"><span class="proj-num">04</span><span class="proj-badge build">En construction</span></div>
-        <div class="proj-name">Scripts Bash — Boîte à outils admin</div>
-        <div class="proj-desc">Collection de scripts utilitaires : audit utilisateurs, rotation de logs, monitoring CPU/RAM/disque avec alertes, déploiement de configs SSH.</div>
-        <div class="proj-why">→ Sens de l'automatisation dès le début</div>
-        <div class="proj-stack"><span class="tag">Bash</span><span class="tag">Cron</span><span class="tag">GitHub</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<hr class="divider">
-
-<!-- CONTACT -->
-<div class="container" id="contact">
-  <div class="section-wrap">
-    <div class="section-tag">// 05 — contact</div>
-    <div class="contact-grid">
-      <div>
-        <h2 class="contact-h">Parlons-en.</h2>
-        <p class="contact-p">Je cherche un premier poste pour faire mes preuves — junior, junior c'est possible. Je suis sérieux, disponible et prêt à m'investir à 100%. Si vous cherchez quelqu'un qui apprend vite et ne compte pas ses heures, on devrait se parler.</p>
-        <div class="clinks">
-          <a href="mailto:alexsander.maida@example.com" class="clink">
-            <span class="clink-icon">@</span>
-            <div><div class="clink-label">Email</div><div class="clink-val">alexsander.maida@example.com</div></div>
-          </a>
-          <a href="https://linkedin.com" class="clink" target="_blank">
-            <span class="clink-icon">in</span>
-            <div><div class="clink-label">LinkedIn</div><div class="clink-val">linkedin.com/in/alex-sander-maida</div></div>
-          </a>
-          <a href="https://github.com" class="clink" target="_blank">
-            <span class="clink-icon">gh</span>
-            <div><div class="clink-label">GitHub — Labs &amp; Scripts</div><div class="clink-val">github.com/alex-maida-sysadmin</div></div>
-          </a>
-          <div class="clink" style="cursor:default">
-            <span class="clink-icon">📍</span>
-            <div><div class="clink-label">Localisation</div><div class="clink-val">Nîmes (30) — Remote &amp; mobilité possibles</div></div>
+  <header class="site-header">
+    <a class="brand" href="#accueil" aria-label="Accueil"><span class="brand-mark">AS</span><span class="brand-name">Alex Sander<small>Support informatique</small></span></a>
+    <button class="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span></button>
+    <nav class="nav" aria-label="Navigation principale"><a href="#services">Services</a><a href="#outils">Environnements</a><a href="#secteurs">Secteurs</a><a href="#methode">Méthode</a><a href="#tarifs">Tarifs</a><a class="nav-contact" href="#contact">Me contacter <span>↗</span></a></nav>
+  </header>
+  <main>
+    <section class="hero" id="accueil">
+      <img class="hero-photo" src="server-room-hero.jpg" alt="Baie de serveurs et câblage réseau" fetchpriority="high">
+      <div class="hero-overlay" aria-hidden="true"></div>
+      <div class="hero-tech-grid" aria-hidden="true"></div>
+      <svg class="hero-network" viewBox="0 0 900 700" preserveAspectRatio="none" aria-hidden="true"><path d="M0 500h205c88 0 72-130 160-130h110c82 0 62-145 155-145h270"/><path d="M210 0v165c0 77 120 64 120 150v205c0 77 106 68 106 180"/><path d="M570 0v72c0 86 120 62 120 148v320c0 84 55 73 55 160"/><circle cx="365" cy="370" r="5"/><circle cx="630" cy="225" r="5"/><circle cx="436" cy="520" r="5"/><circle cx="690" cy="540" r="5"/></svg>
+      <div class="hero-inner section-wrap">
+        <div class="hero-diagram" aria-hidden="true">
+          <div class="diagram-head"><span><i></i> VOTRE ENVIRONNEMENT IT</span><small>ILLUSTRATION</small></div>
+          <div class="diagram-map"><span class="diagram-connector connector-a"></span><span class="diagram-connector connector-b"></span><span class="diagram-connector connector-c"></span>
+            <div class="diagram-core"><b>AS</b><span><strong>Support IT</strong><small>Contact direct</small></span></div>
+            <div class="diagram-node diagram-users"><i>01</i><span><b>Postes</b><small>Équipes</small></span></div>
+            <div class="diagram-node diagram-network"><i>02</i><span><b>Réseau</b><small>Accès & Wi-Fi</small></span></div>
+            <div class="diagram-node diagram-systems"><i>03</i><span><b>Systèmes</b><small>Serveurs & cloud</small></span></div>
           </div>
+          <div class="diagram-foot"><span>ASSISTANCE</span><i></i><span>ADMINISTRATION</span><i></i><span>ÉVOLUTION</span></div>
+        </div>
+        <div class="hero-copy">
+          <p class="hero-kicker"><span></span> SUPPORT INFORMATIQUE · NÎMES & MONTPELLIER</p>
+          <h1>Un souci informatique<br><em>ne devrait pas bloquer</em><br>votre journée.</h1>
+          <p class="hero-lead">Poste bloqué, Wi-Fi instable, messagerie ou sauvegarde à vérifier ? J’aide les petites structures, les indépendants et les télétravailleurs autour de Nîmes et Montpellier. Vous échangez directement avec Alex, avec un cadre clair avant intervention.</p>
+          <div class="hero-actions"><a class="button button-light" href="tel:+33752341852">Appeler Alex <span>↗</span></a><a class="hero-link" href="#contact">Décrire mon besoin <span>↗</span></a></div>
+          <div class="hero-reassurance"><span><i>✓</i> Devis avant intervention</span><span><i>✓</i> À distance ou sur site</span><span><i>✓</i> Explications sans jargon</span></div>
         </div>
       </div>
-      <div class="terminal">
-        <div class="t-bar"><span class="dot dr"></span><span class="dot dy"></span><span class="dot dg"></span><span class="t-ttl">recruteur@entreprise:~$ ssh alex</span></div>
-        <div class="t-body">
-          <div><span class="tp">recruteur</span><span style="color:var(--text3)">:</span><span class="tpath">~</span><span style="color:var(--text3)"> $ </span><span class="tc">ssh alex@sysadmin-junior</span></div>
-          <div class="tok">Connected to alex-maida — Welcome!</div>
-          <br>
-          <div><span class="tp">alex@sysadmin</span><span style="color:var(--text3)">:</span><span class="tpath">~</span><span style="color:var(--text3)"> $ </span><span class="tc">cat profil.json</span></div>
-          <div class="to">Nom    : Alex Sander Maida Llaveta</div>
-          <div class="to">Ville  : Nîmes, France</div>
-          <div class="to">Statut : Cherche 1er poste IT</div>
-          <div class="to">Certs  : CCNA + RHCSA (en cours)</div>
-          <div class="to">Dispo  : Immédiate &bull; Remote OK</div>
-          <br>
-          <div><span class="tp">alex@sysadmin</span><span style="color:var(--text3)">:</span><span class="tpath">~</span><span style="color:var(--text3)"> $ </span><span class="tc">./pourquoi_me_recruter.sh</span></div>
-          <div class="tok">✓ Motivé, rigoureux, apprend très vite</div>
-          <div class="tok">✓ Certifications en cours (pas du blabla)</div>
-          <div class="tok">✓ Prêt à bosser dur pour mériter ma place</div>
-          <div class="twarn">⚡ Junior ≠ incompétent. Donnez-moi une chance.</div>
-          <br>
-          <div><span class="tp">alex@sysadmin</span><span style="color:var(--text3)">:</span><span class="tpath">~</span><span style="color:var(--text3)"> $ </span><span class="cursor"></span></div>
-        </div>
+      <div class="hero-caption"><span>NÎMES · MONTPELLIER · À DISTANCE</span><span>ASSISTANCE · SYSTÈMES · RÉSEAUX</span></div>
+      <a class="scroll-cue" href="#services" aria-label="Défiler vers les services"><span></span></a>
+    </section>
+
+    <div class="trust-strip"><div><span class="trust-icon">01</span><span><b>Un contact direct</b><small>Vous échangez avec Alex</small></span></div><i></i><div><span class="trust-icon">02</span><span><b>Des tarifs annoncés</b><small>Un devis avant d’intervenir</small></span></div><i></i><div><span class="trust-icon">03</span><span><b>Un service de proximité</b><small>Nîmes, Montpellier et alentours</small></span></div></div>
+
+        <section class="services section-wrap" id="services">
+      <div class="section-heading"><div><p class="eyebrow">UN SUPPORT PENSÉ POUR VOTRE ACTIVITÉ</p><h2>Vous vous concentrez sur votre métier.<br><span>Je prends le relais côté informatique.</span></h2></div><p>Un poste bloqué, des accès qui lâchent ou un projet qui avance mal : expliquez-moi la situation. Je vous aide à comprendre le problème et à choisir la prochaine étape.</p></div>
+      <div class="service-grid">
+        <article class="service-card"><div class="service-visual visual-support"><span class="service-visual-tag">SUPPORT AUX ÉQUIPES</span><span class="visual-id">01</span><svg viewBox="0 0 360 158" aria-hidden="true"><path class="art-wire" d="M37 121h286M76 112V62a6 6 0 0 1 6-6h109a6 6 0 0 1 6 6v50M65 113h145l-15 13H80l-15-13Z"/><rect class="art-screen" x="88" y="68" width="97" height="35" rx="3"/><path class="art-line" d="M98 78h38m-38 7h68m-68 7h54"/><rect class="art-window" x="226" y="50" width="77" height="57" rx="5"/><circle class="art-dot" cx="239" cy="64" r="4"/><path class="art-line" d="M249 64h37m-47 12h53m-53 8h45m-45 8h28"/><path class="art-accent-line" d="M211 91h10c10 0 10-21 20-21"/><circle class="art-pulse" cx="219" cy="91" r="5"/></svg></div><div class="service-content"><p class="service-kicker">01 <span>·</span> ASSISTANCE</p><h3>Assistance aux utilisateurs</h3><p>Postes, comptes, imprimantes, messagerie et périphériques. Aide à distance ou sur site pour résoudre les incidents du quotidien.</p><a href="#contact">Décrire un incident <span>↗</span></a></div></article>
+        <article class="service-card"><div class="service-visual visual-systems"><span class="service-visual-tag">SYSTÈMES & SERVEURS</span><span class="visual-id">02</span><svg viewBox="0 0 360 158" aria-hidden="true"><ellipse class="art-shadow" cx="181" cy="128" rx="106" ry="12"/><path class="art-wire" d="M82 116h199M99 109V49l82-22 82 22v60"/><path class="art-face" d="m99 49 82 24 82-24m-82 24v36"/><path class="art-face-light" d="m181 73 82-24v60l-82 24V73Z"/><path class="art-face-dark" d="m99 49 82 24v60l-82-24V49Z"/><path class="art-line" d="M113 61v34m11-31v37m11-34v38m11-34v37m11-33v37m29-36v31m11-34v31m11-35v31m11-34v31m11-35v31"/><circle class="art-pulse" cx="119" cy="104" r="3"/><circle class="art-pulse" cx="202" cy="110" r="3"/></svg></div><div class="service-content"><p class="service-kicker">02 <span>·</span> ADMINISTRATION</p><h3>Systèmes & maintenance</h3><p>Administration Windows et Linux, serveurs, sauvegardes, mises à jour, messagerie et Microsoft 365.</p><a href="#contact">Parler de votre parc <span>↗</span></a></div></article>
+        <article class="service-card"><div class="service-visual visual-network"><span class="service-visual-tag">RÉSEAU & ACCÈS</span><span class="visual-id">03</span><svg viewBox="0 0 360 158" aria-hidden="true"><path class="art-accent-line" d="M179 77 94 42m86 35 87-39m-88 40-86 42m87-43 87 44"/><path class="art-line" d="M94 42h-24m24 0v-14m173 1v13m0-13h24m-197 85H70m197 0h24"/><rect class="art-node" x="150" y="59" width="58" height="42" rx="8"/><path class="art-node-line" d="M163 72h31m-31 8h22m-22 8h28"/><circle class="art-node" cx="92" cy="41" r="17"/><circle class="art-node" cx="268" cy="39" r="17"/><circle class="art-node" cx="92" cy="119" r="17"/><circle class="art-node" cx="268" cy="119" r="17"/><circle class="art-pulse" cx="92" cy="41" r="3"/><circle class="art-pulse" cx="268" cy="39" r="3"/></svg></div><div class="service-content"><p class="service-kicker">03 <span>·</span> CONNECTIVITÉ</p><h3>Réseaux & accès</h3><p>Réseau local, Wi-Fi professionnel, VPN, Active Directory / Entra ID et sécurisation des accès.</p><a href="#contact">Fiabiliser vos connexions <span>↗</span></a></div></article>
+        <article class="service-card"><div class="service-visual visual-project"><span class="service-visual-tag">PROJETS & ÉVOLUTIONS</span><span class="visual-id">04</span><svg viewBox="0 0 360 158" aria-hidden="true"><path class="art-wire" d="M57 120h248"/><rect class="art-window" x="68" y="48" width="81" height="62" rx="5"/><path class="art-line" d="M81 64h46m-46 9h33m-33 9h40m-40 9h25"/><rect class="art-window" x="213" y="48" width="81" height="62" rx="5"/><path class="art-accent-line" d="M159 79h47m-14-13 14 13-14 13"/><circle class="art-node" cx="182" cy="79" r="20"/><path class="art-accent-line" d="M174 79h15m-7-7 7 7-7 7"/><path class="art-line" d="M226 64h49m-49 9h37m-37 9h45m-45 9h26"/><circle class="art-pulse" cx="276" cy="101" r="3"/></svg></div><div class="service-content"><p class="service-kicker">04 <span>·</span> ACCOMPAGNEMENT</p><h3>Projets & évolutions</h3><p>Migration, déploiement Microsoft 365, VPN, Wi-Fi, sécurisation et outils de supervision.</p><a href="#contact">Cadrer un projet <span>↗</span></a></div></article>
       </div>
-    </div>
-  </div>
-</div>
+    </section>
 
-<footer>© 2025 Alex Sander Maida Llaveta · Portfolio HTML/CSS · Nîmes, France</footer>
+    <section class="tools-section" id="outils"><div class="section-wrap tools-inner"><div class="tools-copy"><p class="eyebrow">ENVIRONNEMENTS TECHNIQUES</p><h2>Les outils avec lesquels<br>je travaille.</h2><p>Des environnements courants pour les entreprises, avec une formation continue en systèmes et réseaux.</p></div><div class="tool-logos" aria-label="Technologies et environnements informatiques">
+      <div class="tool-logo"><svg viewBox="0 0 36 36" aria-hidden="true"><rect x="2" y="2" width="14" height="14" fill="#f35325"/><rect x="20" y="2" width="14" height="14" fill="#81bc06"/><rect x="2" y="20" width="14" height="14" fill="#05a6f0"/><rect x="20" y="20" width="14" height="14" fill="#ffba08"/></svg><span><b>Microsoft</b><small>365 · Windows Server</small></span></div>
+      <div class="tool-logo"><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="10.5" fill="none" stroke="#e95420" stroke-width="3.5" stroke-dasharray="49 17" transform="rotate(-30 18 18)"/><circle cx="7" cy="13" r="3" fill="#e95420"/><circle cx="28" cy="9" r="3" fill="#e95420"/><circle cx="27" cy="29" r="3" fill="#e95420"/></svg><span><b>Ubuntu</b><small>Linux</small></span></div>
+      <div class="tool-logo"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M6 20c1-5 4-9 10-10l8 2 5 8-2 4-8 2-9-3-4-3Z" fill="#ee3030"/><path d="M7 22c5 2 13 4 21 1 2 2 1 5-2 6-8 3-16 1-20-2-2-1-1-4 1-5Z" fill="#b21f2d"/><path d="m15 12 8 1 4 6-10 1-5-3Z" fill="#f45b61"/></svg><span><b>Red Hat</b><small>RHEL · RHCSA en cours</small></span></div>
+      <div class="tool-logo"><svg viewBox="0 0 36 36" aria-hidden="true"><g fill="#1597b5"><rect x="4" y="15" width="3" height="8" rx="1.5"/><rect x="9" y="10" width="3" height="13" rx="1.5"/><rect x="14" y="6" width="3" height="17" rx="1.5"/><rect x="19" y="6" width="3" height="17" rx="1.5"/><rect x="24" y="10" width="3" height="13" rx="1.5"/><rect x="29" y="15" width="3" height="8" rx="1.5"/><path d="M4 27h28v2H4z"/></g></svg><span><b>Cisco</b><small>Réseaux · CCNA en cours</small></span></div>
+      <div class="tool-logo"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="m18 3 14 7v16l-14 7L4 26V10l14-7Z" fill="#2878c7"/><path d="m18 10 8 4v9l-8 4-8-4v-9l8-4Z" fill="#8bd4fa"/><path d="m18 14 4 2v5l-4 2-4-2v-5l4-2Z" fill="#e7f7ff"/></svg><span><b>Microsoft Entra ID</b><small>Identité & accès</small></span></div>
+      <div class="tool-logo"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M18 4c-5 0-7 5-7 10v8c-3 2-6 5-6 8 3 3 7 2 10 0h6c3 2 7 3 10 0 0-3-3-6-6-8v-8c0-5-2-10-7-10Z" fill="#263b50"/><ellipse cx="15" cy="14" rx="1.2" ry="2" fill="#fff"/><ellipse cx="21" cy="14" rx="1.2" ry="2" fill="#fff"/><path d="m18 17-2 2h4l-2-2Z" fill="#f2b53d"/><path d="M8 29h20" stroke="#f2b53d" stroke-width="2" stroke-linecap="round"/></svg><span><b>Linux</b><small>RHEL · Bash · Python</small></span></div>
+      </div><p class="training-note"><span></span> CCNA (Cisco) et RHCSA (Red Hat) en cours · IT Support Specialist (Coursera) · Bac Pro Systèmes Numériques</p></div></section>
 
+        <section class="audiences" id="secteurs"><div class="section-wrap">
+      <div class="section-heading"><div><p class="eyebrow">UN ACCOMPAGNEMENT OUVERT À VOTRE ACTIVITÉ</p><h2>Votre métier est spécifique.<br><span>Le support doit l’être aussi.</span></h2></div><p>Les outils changent d’un cabinet à un atelier, d’un commerce à un bureau à domicile. Choisissez le parcours qui vous ressemble ; la liste des profils accompagnés reste ouverte.</p></div>
+      <div class="audience-routes" aria-label="Choisir votre profil"><a href="#structures"><span>POUR VOTRE ORGANISATION</span><b>Entreprise, commerce, cabinet ou association</b><small>Support pour les équipes, les postes et les outils du quotidien <i>↗</i></small></a><a href="#autonomie"><span>POUR VOTRE ACTIVITÉ OU CHEZ VOUS</span><b>Indépendant, profession libérale ou télétravail</b><small>Un interlocuteur direct pour votre environnement de travail <i>↗</i></small></a></div>
+      <div class="audience-grid">
+        <article class="audience-group" id="structures"><div class="audience-head"><span>01</span><div><small>STRUCTURES & ÉQUIPES</small><h3>Le quotidien de votre organisation</h3></div></div><ul><li><b>TPE / PME sans équipe IT</b><small>Un relais informatique ponctuel ou régulier, sans équipe dédiée à recruter.</small></li><li><b>Commerces & artisans</b><small>Postes, imprimantes et connexions pour l’accueil et l’activité.</small></li><li><b>Agences immobilières</b><small>Réseau, téléphonie et outils accessibles au bureau comme en mobilité.</small></li><li><b>Garages</b><small>Postes d’atelier, accueil, imprimantes et connexions.</small></li><li><b>Logistique & BTP</b><small>Comptes et réseau pour les équipes, parfois sur plusieurs sites.</small></li><li><b>Hôtellerie multi-sites</b><small>Des postes et un réseau cohérents d’un établissement à l’autre.</small></li><li><b>Associations</b><small>Comptes, postes et outils partagés adaptés au quotidien.</small></li></ul></article>
+        <article class="audience-group"><div class="audience-head"><span>02</span><div><small>CABINETS & MÉTIERS RÉGLEMENTÉS</small><h3>Des outils fiables pour vos dossiers</h3></div></div><ul><li><b>Avocats & notaires</b><small>Postes, accès et outils de travail suivis.</small></li><li><b>Cabinets comptables</b><small>Sauvegardes, accès et outils cloud à suivre.</small></li><li><b>Cabinets médicaux</b><small>Postes, imprimantes et messagerie pour les consultations.</small></li><li><b>Cliniques vétérinaires</b><small>Matériel et réseau au service de l’activité de soin.</small></li></ul></article>
+        <article class="audience-group audience-personal" id="autonomie"><div class="audience-head"><span>03</span><div><small>INDÉPENDANTS & TÉLÉTRAVAIL</small><h3>Un poste de travail qui tient la route</h3></div></div><ul><li><b>Indépendants & professions libérales</b><small>Poste, comptes, accès et outils adaptés à votre activité.</small></li><li><b>Télétravailleurs & particuliers actifs</b><small>Ordinateur, connexion et outils de travail au quotidien.</small></li></ul><a href="#contact">Votre situation est différente ? Parlons-en <span>↗</span></a></article>
+      </div>
+    </div></section>
+
+    <section class="method" id="methode"><div class="section-wrap"><div class="section-heading"><div><p class="eyebrow">UNE MÉTHODE LISIBLE, DU PREMIER ÉCHANGE À L’INTERVENTION</p><h2>Vous savez où l’on va.<br><span>Et ce que cela implique.</span></h2></div><p>Pas besoin de connaître le vocabulaire technique : décrivez la gêne ou le projet. Nous définissons ensemble le périmètre avant toute intervention.</p></div><div class="method-grid"><article><span>01</span><h3>On fait le point</h3><p>Vous décrivez ce qui bloque, votre environnement et ce qui est prioritaire.</p></article><article><span>02</span><h3>Je pose un cadre clair</h3><p>Je vous explique les options, le périmètre et le tarif avant de commencer.</p></article><article><span>03</span><h3>On intervient</h3><p>À distance ou sur site, selon le besoin et ce qui a été convenu ensemble.</p></article></div><div class="method-note"><b>Vous gardez la maîtrise des choix.</b> Le périmètre et le tarif sont posés avant l’intervention ; vous décidez ensuite si vous souhaitez avancer.</div></div></section>
+
+    <section class="pricing" id="tarifs"><div class="section-wrap"><div class="section-heading"><div><p class="eyebrow">UN CADRE CLAIR, SANS SURPRISE</p><h2>Choisissez le niveau<br><span>de soutien qui vous convient.</span></h2></div><p>Le contenu du forfait et le tarif d’une mission sont définis avant de démarrer. Le quotidien et les évolutions importantes sont distingués clairement.</p></div><div class="price-grid">
+      <article class="price-card"><span class="price-type">À LA DEMANDE</span><h3>Dépannage ponctuel</h3><div class="price"><strong>35 €</strong><span> / heure · à partir de</span></div><ul><li>Diagnostic d’un incident précis</li><li>À distance ou sur site</li><li>Devis avant intervention</li></ul><a href="#contact">Demander un devis <b>↗</b></a></article>
+      <article class="price-card price-featured"><span class="price-type">POUR UN SUIVI RÉGULIER</span><h3>Forfait maintenance</h3><div class="price"><strong>150 €</strong><span> / mois · à partir de</span></div><ul><li>Volume d’heures mensuel défini ensemble</li><li>Suivi et supervision de base</li><li>Délai de réponse convenu</li><li>Demandes urgentes priorisées</li></ul><a href="#contact">Parler de votre structure <b>↗</b></a></article>
+      <article class="price-card"><span class="price-type">POUR UN PROJET DÉFINI</span><h3>Mission projet</h3><div class="price"><strong>220 €</strong><span> / jour · TJM</span></div><ul><li>Migration ou déploiement Microsoft 365</li><li>VPN, Wi-Fi professionnel, Entra ID</li><li>Sécurisation et supervision</li></ul><a href="#contact">Cadrer un projet <b>↗</b></a></article>
+    </div><p class="pricing-boundary"><b>Hors forfait mensuel :</b> toute évolution qui dépasse la maintenance du quotidien est cadrée comme une Mission Projet, facturée au TJM de 220 €/jour. Le périmètre est précisé avant le démarrage.</p><p class="pricing-note">Tarifs indicatifs, ajustés selon la nature et la durée de la mission.</p></div></section>
+
+    <section class="about section-wrap" id="apropos"><div class="about-photo"><img src="alex-photo.jpg" alt="Alex Sander Maida Llaveta, administrateur systèmes et réseaux"><div class="photo-label"><span>AS</span><div><b>Alex Sander Maida Llaveta</b><small>Votre interlocuteur informatique</small></div></div></div><div class="about-copy"><p class="eyebrow">UN INTERLOCUTEUR, PAS UN STANDARD</p><h2>Un échange direct.<br><span>Des réponses compréhensibles.</span></h2><p>Je suis Alex Sander Maida Llaveta, administrateur systèmes et réseaux indépendant. J’accompagne des structures professionnelles et des particuliers actifs de Nîmes, Montpellier et des communes environnantes.</p><p>Je prends le temps de comprendre votre environnement, d’expliquer les options et de proposer une intervention adaptée. Vous savez qui intervient et comment me joindre.</p><div class="about-points"><span><b>✓</b> Contact direct avec Alex</span><span><b>✓</b> Conseils sans jargon inutile</span><span><b>✓</b> Solutions adaptées à vos usages</span></div></div></section>
+
+    <section class="contact" id="contact"><div class="contact-glow"></div><div class="section-wrap contact-inner"><div><p class="eyebrow">UN BESOIN, UNE QUESTION ?</p><h2>Parlons de votre<br>informatique<span>.</span></h2><p>Appelez-moi ou envoyez quelques lignes. Nous verrons ensemble ce qui vous aidera le plus, sans engagement.</p><div class="contact-area">⌖ &nbsp;Nîmes · Montpellier · communes environnantes</div></div><div class="contact-actions"><a class="contact-phone" href="tel:+33752341852"><span><small>APPELEZ ALEX</small><b>07 52 34 18 52</b></span><i>↗</i></a><a class="contact-email" href="mailto:alexsandermaida3@gmail.com">alexsandermaida3@gmail.com <span>↗</span></a><small class="contact-promise">Premier échange sans engagement</small></div></div></section>
+  </main>
+  <footer class="footer"><a class="brand" href="#accueil"><span class="brand-mark">AS</span><span class="brand-name">Alex Sander<small>Support informatique</small></span></a><span>© <span id="year"></span> Alex Sander Maida Llaveta</span><div><span>ASSISTANCE · SYSTÈMES · RÉSEAUX</span><a href="#services">Services</a><a href="#methode">Méthode</a><a href="#contact">Contact</a></div></footer>
+  <script src="script.js"></script>
 </body>
 </html>
+
+
+
+
+
+
